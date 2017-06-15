@@ -1,0 +1,7 @@
+C:\Projects\PageRoute.NET\Assemblies\PageRouteDemoApp\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\PageRoute.NET\Assemblies\PageRouteDemoApp\bin\Debug\PageRouteDemoApp.dll
+C:\Projects\PageRoute.NET\Assemblies\PageRouteDemoApp\bin\Debug\PageRouteDemoApp.pdb
+C:\Projects\PageRoute.NET\Assemblies\PageRouteDemoApp\bin\Debug\PageRoute.dll
+C:\Projects\PageRoute.NET\Assemblies\PageRouteDemoApp\bin\Debug\PageRoute.pdb
+C:\Projects\PageRoute.NET\Assemblies\PageRouteDemoApp\obj\Debug\PageRouteDemoApp.dll
+C:\Projects\PageRoute.NET\Assemblies\PageRouteDemoApp\obj\Debug\PageRouteDemoApp.pdb

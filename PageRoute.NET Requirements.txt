@@ -1,0 +1,127 @@
+PageRoute.NET
+
+The zero-configuration URL to endpoint routing system for ASP.NET.
+
+
+THE USER WILL TYPE THIS - SO IT HAS TO BE SHORT AND EASY TO REMEMBER.
+
+<%@Page Inherits="GSR.Dashboard.Web.EndPointRouter" %>
+
+using System.Web.UI;
+
+namespace OpCheck.PageRoute
+{
+	//
+	// DEFAULT ROUTER.
+	//
+	public abstract class Router : Page
+	{
+		protected Router () : base()
+		{}
+	
+	
+		protected Router (string EndPointNamespace) : base()
+		{
+			_EndPointNamespace = EndPointNamespace;
+
+			Router.Load += Router_Load;
+		}
+		
+		
+		protected void Router_Load (object Sender, EventArgs Args)
+		{
+			//
+			// GET THE URL.
+			// CHOP OFF THE EXTENSION.
+			//
+			// http://server/Endpoints/CompanyValueGauge.aspx
+			//
+			
+			//
+			// GET THE PATH.
+			//
+			
+			//
+			// GET THE ENDPOINT CODE.
+			//
+			string EndPointCode = EndPointCodeExtractor.GetEndPointCodeFromPath(Path);
+			
+			//
+			// CREATE THE ENDPOINT.
+			//
+			EndPointFactory CreatedFactory = new EndPointFactory();
+			CreatedFactory.Namespace = _EndPointNamespace;
+			CreatedFactory.Code = EndPointCode;
+			EndPoint CreatedEndPoint = CreatedFactory.CreateEndPoint();
+			
+			//
+			// CONFIGURE THE ENDPOINT.
+			//
+			CreatedEndPoint.Headers = Headers;
+			CreatedEndPoint.Request = Request;
+			CreatedEndPoint.Response = Response;
+			CreatedEndPoint.EndPointCode = EndPointCode;
+			
+			//
+			// EXECUTE THE ENDPOINT.
+			//
+			CreatedEndPoint.Execute();
+		}
+		
+		
+		protected string _EndPointNamespace;
+	}
+}
+
+
+//
+// USER DERIVED ROUTER.
+//
+public class AppRouter : PageRouter.Router
+{
+	public AppRouter : base("GSR.Dashboard.Web")
+	{}
+}
+
+
+//
+// USER DERIVED ROUTER.
+//
+public class AppRouter : PageRouter.Router
+{
+	public AppRouter : base()
+	{
+		_EndPointNamespace = "GSR.Dashboard.Web";
+	}
+}
+
+
+//
+// ENDPOINT DEFINITION.
+//
+namespace PageRoute
+{
+	public abstract class EndPoint ()
+	{
+		public abstract void Execute ();
+	}
+}
+
+
+//
+// USER-DEFINED ENDPOINT.
+//
+using Newtonsoft.Json;
+using PageRoute;
+
+namespace GSR.Dashboard.Web
+{
+	public class CompanyValueGaugeEndpoint : Endpoint
+	{
+		public override void Execute ()
+		{
+			Response.Status = 200;
+			Response.ContentType = "application/json";
+		}
+	}
+}

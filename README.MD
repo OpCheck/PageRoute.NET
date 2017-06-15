@@ -14,15 +14,29 @@ Instead of , we instead embrace the default configuration of ASP.NET.
 
 ## Motivation
 
-Configuration of IIS for ASP.NET applications can be a time-consuming and error-prone process.
+A complex IIS configuration has disadvantages for everyone - both software developers and system administrators.
+Once you have a configuration that works, then you have to document it - when you first write it and every time the configuration changes - so other people can follow it.  This takes time.
 
-Once you have a configuration that works, it is important to document the configuration.
+On the other end, following a configuration of IIS for an ASP.NET application can be an error-prone and very time-consuming process.
+Setting up a new server for local development has been an exercise in trial-and-error.
+Setting up a server for production 
 
-The goal is avoid all of that by embracing the working, default configuration that IIS offers us.
+One of the goals of PageRoute is to avoid all of this.
 
-The traditional ASP.NET event model is fading away with frameworks such as ASP.NET, Web API, etc.
+We embrace the working, default configuration that IIS offers us.
 
+
+There is no concept of model, view, controller.  
+I became frustrated with the
+
+You can write good-looking, resource URIs using ASP.NET MVC and Web API - but the value here is in their routing systems.
 These frameworks allow you to write 
+You can 
+
+The goal is 
+
+The traditional ASP.NET event model long faded away with frameworks such as ASP.NET, Web API, and other.
+
 
 ## Advantages
 

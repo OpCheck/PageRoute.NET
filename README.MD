@@ -92,7 +92,8 @@ Define the finance app's router as follows:
 		}
 	}
 
-What we are saying above is that this router searches for endpoints in the finance assembly and finance namespace.
+What we are saying above is that this router searches for endpoints in assembly 'FinanceAssembly.dll' and 'Finance' namespace.
+The assembly name is the first parameter and the namespace is the second parameter.
 This is how endpoints are grouped.
 Define your endpoint as follows:
 

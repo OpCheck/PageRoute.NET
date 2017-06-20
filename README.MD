@@ -103,7 +103,7 @@ Define your endpoint as follows:
 	{
 		public class CompanyEndpoint : Endpoint
 		{
-			public override void Execute ()
+			public void Execute ()
 			{
 				Response.Status = 200;
 				Response.ContentType = "text/plain";
@@ -111,3 +111,43 @@ Define your endpoint as follows:
 			}
 		}
 	}
+
+This completes the example.
+The URL is now mapped to the 'CompanyEndpoint' class.
+
+## Intrinsic Objects
+
+You will have likely noticed that we are using the intrinsic 'Response' object just like we would on a normal page.
+Endpoints have all of the same intrinsic objects available.
+In the case that we have missed any, you can always write 'Page.Response' instead.
+
+## Routers
+
+A router defines a set of routed URLs where each routed URL maps to an endpoint in the same assembly and namespace.
+A router is just an ASP.NET page itself.
+You can define as many routers as you wish.
+This is useful if you have endpoint classes that reside in different assemblies or namespaces.
+
+## Method
+
+Instead of implementing method 'Execute' you can write:
+
+	using PageRoute;
+
+	namespace Finance
+	{
+		public class CompanyEndpoint : Endpoint
+		{
+			public void Get ()
+			{
+				Response.Status = 200;
+				Response.ContentType = "text/plain";
+				Response.Write("IT WORKS!  CompanyEndpoint.Execute().");
+			}
+		}
+	}
+
+This restricts the endpoint to only serve HTTP GET requests.
+If someone tried to post to it then the router would return an HTTP status code of 404 with no content.
+You can also implement the 'Execute' method.
+In this case all HTTP GET requests would get routed to the 'Get' method and everything else would get routed to the 'Execute' method.

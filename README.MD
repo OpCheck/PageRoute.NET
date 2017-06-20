@@ -45,57 +45,68 @@ On the other end, following a configuration for an ASP.NET application can be an
 Setting up a new server for local development has been a long exercise in trial-and-error - and has caused productivity issues - for this author.
 Setting up a wrongly-configured server in a production scenario can have even worse consequences.
 
-One of the goals of PageRoute is to avoid all of this by embrace the default configuration of IIS and ASP.NET.
-
-The author of this library has noticed a trend where 
+One of the goals of PageRoute is to avoid all of this by embracing the default configurations of IIS and ASP.NET.
 
 ## Advantages
 
-1. 
-
 1. No modifications to the web.config file are needed.
 
-1. No additional configuration to IIS is needed if the default ASP.NET handler mappings are installed.
+1. No configuration to IIS is needed if the default ASP.NET handler mappings are installed.
+
+1. This framework has no configuration file.
+
+1. The web application directory structure defines which URLs are valid.  You can easily tell which ASPX files exist and therefore 
+
+1. A routed ASPX page can reside in any directory in the web application and can be moved around without restriction.  It always maps to the same endpoint class.
 
 ## Disadvantages
 
-1. 
-
+1. This is a page URL-based framework that relies on the physical ASPX f
 
 ## Getting Started
 
-Let's say we are building a finance app with a company data endpoint at the following URL:
+Here is how to build a routed ASPX page using PageRoute.NET.
+Let's say we are building a finance web application that has a company data endpoint at the following URL:
 
-	http://127.0.0.1/FinanceApp/CompanyData.aspx?CompanyId=100
+	http://127.0.0.1/Finance/Company.aspx?CompanyId=100
 
 The contents of the CompanyData.aspx is this:
 
-	<%@Page Inherits="FinanceApp.AppRouterPage" %>
+	<%@Page Inherits="Finance.AppRouterPage" %>
+	
+The only thing we are expressing here is that this page's URL is going to be processed by the finance app's router page.
+The router page defines a set of routes.
+A route maps a URL to an endpoint class.
+Every routed ASPX page in the finance app is exactly the same.
 
-Every page is exactly the same.
+Define the finance app's router as follows:
 
-Define your app router as follows:
+	using PageRoute;
 
-	namespace FinanceApp
+	namespace Finance
 	{
-		public class AppRouterPage : PageRoute.RouterPage
+		public class AppRouterPage : RouterPage
 		{
-			public AppRouterPage1 () : base("FinanceApp", "FinanceApp")
+			public AppRouterPage1 () : base("FinanceAssembly", "Finance")
 			{}
 		}
 	}
 
+What we are saying above is that this router searches for endpoints in the finance assembly and finance namespace.
+This is how endpoints are grouped.
 Define your endpoint as follows:
 
-	namespace FinanceApp
+	using PageRoute;
+
+	namespace Finance
 	{
-		public class CompanyDataEndpoint : PageRoute.Endpoint
+		public class CompanyEndpoint : Endpoint
 		{
 			public override void Execute ()
 			{
 				Response.Status = 200;
 				Response.ContentType = "text/plain";
-				Response.Write("CompanyDataEndpoint");
+				Response.Write("IT WORKS!  CompanyEndpoint.Execute().");
 			}
 		}
 	}

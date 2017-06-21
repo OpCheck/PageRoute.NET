@@ -1,6 +1,6 @@
 # PageRoute.NET
 
-This is an ASP.NET framework that maps a page URL (ending in *.aspx) to an endpoint implementation with absolutely no configuration required.
+An ASP.NET framework that maps a page URL (ending in *.aspx) to an endpoint implementation with absolutely no configuration required.
 For each page URL, a web service implementer need only concern himself with writing an endpoint class.
 The result is an extremely simple and portable web service implementation that anyone can understand.
 
@@ -29,29 +29,31 @@ One of the goals of PageRoute is to avoid all of this by embracing the default c
 
 1. This framework has no configuration file.
 
-1. The web application directory structure defines which URLs are valid.  You can easily tell which ASPX files exist and therefore 
+1. The web application directory structure defines which URLs are valid.  You can easily tell which ASPX files exist and consequently know which 
 
 1. A routed ASPX page can reside in any directory in the web application and can be moved around without restriction.  It always maps to the same endpoint class.
 
-## Disadvantages
+## Trade-off Analysis
 
-1. This is a page URL-based framework that relies on the physical ASPX f
-
-## Tradeoffs
-
-A lot of web service developers like nice, terse, resource URLs such as this:
+A lot of web service developers prefer resource URLs such as this one:
 
 	http://127.0.0.1/Company/100
-	
-However, in order to achieve that you have to edit the web.config file and add an HTTP handler.
-Also, the above URL style is not very descriptive.
 
-Now consider the ASPX equivalent:
+That's an understandable viewpoint because:
+
+1. the above URL is short.  This makes it easier to construct by hand.
+
+2. the above URL has a definite parameter order.  This is useful for caching, permalinking and many other practices.
+
+However, this style requires additional configuration and is less self-descriptive.
+
+Now consider the ASPX file equivalent of the previous URL:
 
 	http://127.0.0.1/Company.aspx?CompanyId=100
 	
-Is that so bad?  This is a completely understandable URL.
+This is a completely understandable, self-descriptive URL that works with no additional configuration.
 
+This style is longer and allows parameters to appear in any order.
 
 ## Terminology
 
@@ -59,18 +61,11 @@ A page URL is any URL that contains an ASPX page such as 'http://127.0.0.1/MyPag
 
 An endpoint is a class that implements some web application logic.
 
+An endpoint group is a set of endpoint classes that reside in the same assembly and namespace.
+
 A route maps a page URL to an endpoint.
 
 A router is a class that defines a set of routes.
-
-## About
-
-
-This framework does not implement an Model-View-Controller (MVC) design pattern.
-MVC is appropriate for several applications and has its place.
-While all MVC frameworks in practice also need a routing system to determine which controller to execute - here we are only solving the problem of mapping HTTP requests to endpoint logic.
-
-
 
 ## Getting Started
 
@@ -160,3 +155,9 @@ This restricts the endpoint to only serve HTTP GET requests.
 If someone tried to post to it then the router would return an HTTP status code of 404 with no content.
 You can also implement the 'Execute' method.
 In this case all HTTP GET requests would get routed to the 'Get' method and everything else would get routed to the 'Execute' method.
+
+## Additional Notes
+
+This framework does not implement a Model-View-Controller (MVC) design pattern.
+MVC is appropriate for several applications and has its place.
+While all MVC frameworks in practice also need a routing system to determine which controller to execute - here we are only solving the problem of mapping HTTP requests to endpoint logic.

@@ -35,15 +35,17 @@ One of the goals of PageRoute is to avoid all of this by embracing the default c
 
 ## Trade-off Analysis
 
-A lot of web service developers prefer resource URLs such as this one:
+A lot of web service developers prefer to write a resource URL such as this one:
 
 	http://127.0.0.1/Company/100
 
-That's an understandable viewpoint because:
+Let's consider the trade-offs of this URL style:
 
-1. the above URL is short.  This makes it easier to construct by hand.
+1. The URL is short - so it's easier to construct by hand or code for.
+	
+That's an understandable viewpoint because the URL is short - 
 
-2. the above URL has a definite parameter order.  This is useful for caching, permalinking and many other practices.
+The above URL also has a definite parameter order.  This is useful for caching, permalinking and many other practices but is less flexible.
 
 However, this style requires additional configuration and is less self-descriptive.
 

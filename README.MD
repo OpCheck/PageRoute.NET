@@ -6,8 +6,8 @@ The result is an extremely simple and portable web service implementation that a
 
 ## Motivation
 
-Some people believe that going to great lengths to remove the file extension('.aspx') from the URL is worth the effort.
-We don't, because it requires a more complex configuration.
+Some developers go to great lengths to remove the '.aspx' file extension from URLs.
+We reject that idea because it requires a more complex configuration.
 
 A more complex configuration has disadvantages for everyone - both software developers and system administrators.
 
@@ -29,7 +29,7 @@ One of the goals of PageRoute is to avoid all of this by embracing the default c
 
 1. This framework has no configuration file.
 
-1. The web application directory structure defines which URLs are valid.  You can easily tell which ASPX files exist and consequently know which 
+1. The web application directory structure defines which URLs are valid.
 
 1. A routed ASPX page can reside in any directory in the web application and can be moved around without restriction.  It always maps to the same endpoint class.
 

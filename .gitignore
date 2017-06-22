@@ -6,3 +6,7 @@ Assemblies/PageRoute/obj/Debug/PageRoute.csproj.FileListAbsolute.txt
 Assemblies/PageRouteDemoApp/obj/Debug/PageRouteDemoApp.csproj.FileListAbsolute.txt
 Assemblies/PageRouteDemoApp/obj/Debug/ResolveAssemblyReference.cache
 *.dll
+Web/WebRoot/bin/PageRoute.dll
+Web/WebRoot/bin/PageRoute.pdb
+Web/WebRoot/bin/PageRouteDemoApp.dll
+*.pdb

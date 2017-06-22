@@ -175,7 +175,23 @@ In this case all HTTP GET requests would get routed to the 'Get' method and ever
 
 ## Router Algorithm
 
+View the source file 'RouterPage.cs' for full details.
+The router algorithm is very simple.  Here is an overview:
 
+1. Determine the endpoint class name by inspecting the URL.
+
+1. Create an instance of the endpoint class.
+If the endpoint does not exist, then return HTTP Status Code 404 (Not Found).
+
+1. Determine if the target method exists on the endpoint by taking the HTTP Method and converting it to Pascal Case.
+If the method exists, invoke it and we are done.
+
+1. Determine if the default 'Execute' method exists on the endpoint.
+If the default method exists, invoke it and we are done.
+
+1. We have not found any method to execute on the endpoint.
+Return HTTP Status Code 405 (Method Not Allowed).
+Currently, we are violating the HTTP protocol because the router does not return an Allow header.
 
 ## Additional Notes
 

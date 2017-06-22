@@ -50,7 +50,26 @@ namespace PageRoute
 			CreatedFactory.AssemblyName = _EndpointAssemblyName;
 			CreatedFactory.Namespace = _EndpointNamespace;
 			CreatedFactory.EndpointCode = EndpointCode;
-			Endpoint CreatedEndpoint = CreatedFactory.CreateEndPoint();
+			Endpoint CreatedEndpoint;
+			
+			try
+			{
+				CreatedEndpoint = CreatedFactory.CreateEndPoint();
+			}
+			catch (TypeLoadException E)
+			{
+				Response.StatusCode = 404;
+				Response.ContentType = "text/plain";
+				Response.Write(E.Message);
+				return;
+			}
+			catch (Exception E)
+			{
+				Response.StatusCode = 500;
+				Response.ContentType = "text/plain";
+				Response.Write(E.Message);
+				return;
+			}
 			
 			//
 			// CONFIGURE THE ENDPOINT.
@@ -99,7 +118,7 @@ namespace PageRoute
 			
 			//
 			// NO DEFAULT EXECUTE METHOD FOUND EITHER.
-			// RETURN AN HTTP 404 ERROR WITH NO CONTENT.
+			// RETURN AN HTTP 405 ERROR WITH NO CONTENT.
 			//
 			Response.StatusCode = 405;
 			Response.SuppressContent = true;

@@ -33,59 +33,58 @@ One of the goals of PageRoute is to avoid all of this by embracing the default c
 
 1. A routed ASPX page can reside in any directory in the web application and can be moved around without restriction.  It always maps to the same endpoint class.
 
-## Trade-off Analysis
+## Trade-offs
 
-A lot of web service developers prefer to write a resource URL such as this one:
+Consider the following resource URL style:
 
 	http://127.0.0.1/Company/100
 
-Let's consider the trade-offs of this URL style:
+1. The resource URL style is short - so it's easier to construct by hand and code for.
+However, this style requires additional configuration and is less descriptive.
+What does the 100 mean?
 
-1. The URL is short - so it's easier to construct by hand or code for.
-	
-That's an understandable viewpoint because the URL is short - 
+1. The resource URL style has a definite parameter order.
+This is useful for caching, permalinking and many other practices but is also less flexible.
 
-The above URL also has a definite parameter order.  This is useful for caching, permalinking and many other practices but is less flexible.
-
-However, this style requires additional configuration and is less self-descriptive.
-
-Now consider the ASPX file equivalent of the previous URL:
+Now consider the **ASPX URL** equivalent:
 
 	http://127.0.0.1/Company.aspx?CompanyId=100
 	
-This is a completely understandable, self-descriptive URL that works with no additional configuration.
+1. The file-based URL style is longer - but it works with no additional configuration.
 
-This style is longer and allows parameters to appear in any order.
+1. The file-based URL style is more descriptive.
+We can determine what the intent of the request is just by looking at it.
+
+1. The file-based URL style allows parameters to appear in any order.
+This allows considerable flexibility when crafting a request.
 
 ## Terminology
 
-A page URL is any URL that contains an ASPX page such as 'http://127.0.0.1/MyPage.aspx'.
+An **ASPX URL** is any file-based URL that refers a physical ASPX page such as 'http://127.0.0.1/MyPage.aspx'.
 
-An endpoint is a class that implements some web application logic.
+An **endpoint** is a class that implements the web service logic that we ultimately execute.
 
-An endpoint group is a set of endpoint classes that reside in the same assembly and namespace.
-
-A route maps a page URL to an endpoint.
-
-A router is a class that defines a set of routes.
+A **router** is a special page class that analyzes the ASPX URL path and executes an endpoint.
+A single router instance always looks for endpoints in the same assembly and namespace.
 
 ## Getting Started
 
 Here is how to build a routed ASPX page using PageRoute.NET.
-Let's say we are building a finance web application that has a company data endpoint at the following URL:
+
+Let's say we are building a finance web application.
+We get company data by hitting the following URL:
 
 	http://127.0.0.1/Finance/Company.aspx?CompanyId=100
 
-The contents of the CompanyData.aspx is this:
+The contents of 'CompanyData.aspx' is simply this:
 
 	<%@Page Inherits="Finance.AppRouterPage" %>
-	
-The only thing we are expressing here is that this page's URL is going to be processed by the finance app's router page.
-The router page defines a set of routes.
-A route maps a URL to an endpoint class.
-Every routed ASPX page in the finance app is exactly the same.
 
-Define the finance app's router as follows:
+This page only exists so the URL is valid.
+Every page inherits from a router.
+A router is just a special page that finds the endpoint to execute.
+
+Define the router as follows:
 
 	using PageRoute;
 
@@ -93,14 +92,25 @@ Define the finance app's router as follows:
 	{
 		public class AppRouterPage : RouterPage
 		{
-			public AppRouterPage1 () : base("FinanceAssembly", "Finance")
+			public AppRouterPage () : base("FinanceAssembly", "Finance")
 			{}
 		}
 	}
 
-What we are saying above is that this router searches for endpoints in assembly 'FinanceAssembly.dll' and 'Finance' namespace.
-The assembly name is the first parameter and the namespace is the second parameter.
-This is how endpoints are grouped.
+The only thing we are expressing here is that this router looks for endpoints in assembly 'FinanceAssembly.dll' and 'Finance' namespace.
+
+Here's how the router determines which endpoint it's looking for in this example:
+
+1. Get the file path.  Result: '/Finance/Company.aspx'.
+
+1. Get the name of the ASPX file.  Result: 'Company.aspx'.
+
+1. Chop off the extension:  Result: 'Company'. 
+
+1. Append the word 'Endpoint'.  Result: 'CompanyEndpoint'.  The router now has the endpoint class name that it needs.
+
+1. The router already knows which assembly and namespace to look in to find this class.
+
 Define your endpoint as follows:
 
 	using PageRoute;
@@ -118,14 +128,16 @@ Define your endpoint as follows:
 		}
 	}
 
-This completes the example.
-The URL is now mapped to the 'CompanyEndpoint' class.
+The router creates an instance of 'CompanyEndpoint' and invokes the 'Execute' method.
+
+We are done.  This completes the example.
 
 ## Intrinsic Objects
 
-You will have likely noticed that we are using the intrinsic 'Response' object just like we would on a normal page.
-Endpoints have all of the same intrinsic objects available.
-In the case that we have missed any, you can always write 'Page.Response' instead.
+You may have noticed that we are using the intrinsic 'Response' property just like we would on any ASP.NET page.
+Endpoints act as a facade and expose the exact same intrinsic objects.
+
+In the case that we have missed any, we also expose the page itself as a property - so you can always write 'Page.Response' instead.
 
 ## Routers
 
@@ -134,9 +146,9 @@ A router is just an ASP.NET page itself.
 You can define as many routers as you wish.
 This is useful if you have endpoint classes that reside in different assemblies or namespaces.
 
-## Method
+## Restricting the HTTP Method
 
-Instead of implementing method 'Execute' you can write:
+Instead of implementing 'Execute' - which will serve any request - you can write:
 
 	using PageRoute;
 
@@ -154,9 +166,16 @@ Instead of implementing method 'Execute' you can write:
 	}
 
 This restricts the endpoint to only serve HTTP GET requests.
-If someone tried to post to it then the router would return an HTTP status code of 404 with no content.
-You can also implement the 'Execute' method.
+
+If an HTTP POST request is sent to the 'Company.aspx' URL then the router would return an HTTP status code of 404 with no content.
+The endpoint would be instantiated but no methods would be invoked.
+
+You can also implement the 'Execute' method to handle .
 In this case all HTTP GET requests would get routed to the 'Get' method and everything else would get routed to the 'Execute' method.
+
+## Router Algorithm
+
+
 
 ## Additional Notes
 

@@ -178,18 +178,18 @@ In this case all HTTP GET requests would get routed to the 'Get' method and ever
 View the source file 'RouterPage.cs' for full details.
 The router algorithm is very simple.  Here is an overview:
 
-1. Determine the endpoint class name by inspecting the URL.
+1. Inspect the URL and determine the endpoint class name.
 
-1. Create an instance of the endpoint class.
+1. Attempt to create an instance of the endpoint class.
 If the endpoint does not exist, then return HTTP Status Code 404 (Not Found).
 
-1. Determine if the target method exists on the endpoint by taking the HTTP Method and converting it to Pascal Case.
+1. Check if a Pascal-cased HTTP Method (i.e. 'Get', 'Post', 'Put') exists on the endpoint.
 If the method exists, invoke it and we are done.
 
-1. Determine if the default 'Execute' method exists on the endpoint.
-If the default method exists, invoke it and we are done.
+1. Check if the 'Execute' method exists on the endpoint.
+If the method exists, invoke it and we are done.
 
-1. We have not found any method to execute on the endpoint.
+1. At this point we have not found any method to execute on the endpoint.
 Return HTTP Status Code 405 (Method Not Allowed).
 Currently, we are violating the HTTP protocol because the router does not return an Allow header.
 

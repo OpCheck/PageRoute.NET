@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Web.UI;
 
 namespace PageRoute
@@ -28,6 +29,9 @@ namespace PageRoute
 			_EndpointAssemblyName = AssemblyName;
 			_EndpointNamespace = EndpointNamespace;
 
+			//
+			// ADD THE LOAD EVENT.
+			//
 			Load += RouterPage_Load;
 		}
 		
@@ -35,20 +39,9 @@ namespace PageRoute
 		protected void RouterPage_Load (object Sender, EventArgs Args)
 		{
 			//
-			// GET THE URL.
-			// CHOP OFF THE EXTENSION.
+			// GET THE ENDPOINT CODE BY SPLITTING THE URL AND CHOPPING OFF THE EXTENSION.
 			//
-			// http://server/Endpoints/CompanyValueGauge.aspx
-			//
-			
-			//
-			// GET THE PATH.
-			//
-			
-			//
-			// GET THE ENDPOINT CODE.
-			//
-			string EndpointCode = "Test";//EndpointCodeExtractor.GetEndpointCodeFromPath(Path);
+			string EndpointCode = EndpointCodeExtractor.GetEndpointCodeFromPath(Request.FilePath);
 			
 			//
 			// CREATE THE ENDPOINT.
@@ -62,15 +55,54 @@ namespace PageRoute
 			//
 			// CONFIGURE THE ENDPOINT.
 			//
-			CreatedEndpoint.Application = Application;
-			CreatedEndpoint.Request = Request;
-			CreatedEndpoint.Response = Response;
-			CreatedEndpoint.EndpointCode = EndpointCode;
+			CreatedEndpoint.Page = this;
 			
 			//
-			// EXECUTE THE ENDPOINT.
+			// DETERMINE THE METHOD NAME TO CALL.
 			//
-			CreatedEndpoint.Execute();
+			string MethodName = Char.ToUpper(Request.HttpMethod[0]) + Request.HttpMethod.ToLower().Substring(1, Request.HttpMethod.Length - 1);
+			
+			//
+			// GET THE TYPE OF THE CREATED ENDPOINT.
+			// WE WILL USE THIS MULTIPLE TIMES TO REFLECT AGAINST.
+			//
+			Type CreatedEndpointType = CreatedEndpoint.GetType();
+
+			//
+			// CHECK IF THE ENDPOINT IMPLEMENTS THE TARGET METHOD.
+			//
+			MethodInfo TargetMethod = CreatedEndpointType.GetMethod(MethodName);
+			
+			if (TargetMethod != null)
+			{
+				//
+				// EXECUTE THE TARGET METHOD.
+				//
+				TargetMethod.Invoke(CreatedEndpoint, new object[]{});
+				return;
+			}
+			
+			//
+			// THE TARGET METHOD IS NOT IMPLEMENTED.
+			// CHECK FOR THE DEFAULT EXECUTE METHOD.
+			//
+			MethodInfo ExecuteMethod = CreatedEndpointType.GetMethod("Execute");
+
+			if (ExecuteMethod != null)
+			{
+				//
+				// EXECUTE THE "EXECUTE" METHOD ON THE ENDPOINT.
+				//
+				ExecuteMethod.Invoke(CreatedEndpoint, new object[]{});
+				return;
+			}
+			
+			//
+			// NO DEFAULT EXECUTE METHOD FOUND EITHER.
+			// RETURN AN HTTP 404 ERROR WITH NO CONTENT.
+			//
+			Response.StatusCode = 405;
+			Response.SuppressContent = true;
 		}
 		
 		

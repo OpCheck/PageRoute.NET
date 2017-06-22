@@ -47,6 +47,8 @@
     <Compile Include="AppRouterPage2.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="PostOnlyEndpoint.cs" />
+    <Compile Include="GetOnlyEndpoint.cs" />
     <Compile Include="TestEndpoint.cs" />
   </ItemGroup>
   <ItemGroup>
